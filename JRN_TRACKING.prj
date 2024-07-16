@@ -1,0 +1,23 @@
+//------------------------------------------------------------------------------
+// JRN_TRACKING
+//------------------------------------------------------------------------------
+
+#statusline "statgal"
+
+#include GalNet.inc end;
+#include GloVars.inc
+// #include galaktika.vil
+
+#component "C_JRN_TRACKING"
+#define CompTitle Отслеживание событий изменений
+#doc
+  #CompTitle
+#end
+#params
+[vip]
+LicenseControlInclude=""
+#end
+#include JRN_TRACKING.ver
+
+#make "vip\JRN_TRACKING_BASE.vip"
+#make "vip\JRN_TRACKING_PUBLICATION_TERMS.vip"

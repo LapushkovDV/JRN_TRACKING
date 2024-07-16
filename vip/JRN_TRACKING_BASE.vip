@@ -1,0 +1,134 @@
+/*************************************************************************************************\
+* Наименование: Базовый объект формирования запросов и JSON произвольной структуры                *
+* Контур/Модуль: Абстрактный конструктор JSON                                                     *
+* Примечание:                                                                                     *
+*                                                                                                 *
+* Вид работы  |Номер         |Дата    |Исполнитель              |Проект                           *
+* ----------------------------------------------------------------------------------------------- *
+
+\*************************************************************************************************/
+/*
+x$journal.status = 2 - insert
+x$journal.status = 4 - update
+x$journal.status = 8 - delete
+*/
+#include Query.vih
+#include JRN_TRACKING_BASE.vih
+
+//************************************************************
+const
+end;
+Interface JRN_TRACKING_BASE 'QRY базовый объект';
+table struct tJRN (
+   nrec      : comp
+ , tablecode : word
+ , tablenrec : comp
+ , lastdate  : date
+ , lasttime  : time
+)
+with index (
+  ind1 = nrec
+);
+create view
+var
+      _needlog : boolean;
+     _LongStringLog : tptr;
+     _serviceLog    : TPTR;
+
+    _logQRY_OUT : string; //глобальная
+as select
+   tJRN.nrec
+from
+   x$files x$files_br
+ , x$journal jrn
+ , tJRN
+;
+/*
+ to do
+ изменить структуру QUE_ENTRIESFORREVIEW для того, чтобы туда можно было не только конструктор JSON использовать (QRY)
+ */
+Function GenerateNewFile: string;
+{
+ result := GetStringParameter('Files','OutputFilesDirectory',0)+ '\QRY_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS-SSS');
+ result := replace(result,'\\','\');
+}
+window winSelectSysTable 'Выбор системной таблицы', cyan;
+browse brSelectSysTable ;
+ table x$files_br;
+  Fields
+   x$files_br.XF$CODE  'Код'      :[5] , Protect, NoPickButton;
+   x$files_br.XF$NAME  'Имя'      :[10], Protect, NoPickButton;
+   x$files_br.XF$TITLE 'Описание' :[15], Protect, NoPickButton;
+end;
+end;
+windowevent winSelectSysTable ;
+ cmdefault: {
+   closewindowex(winSelectSysTable, cmDefault)
+ }
+end;
+Procedure MysqlAddStr(var query_handle: tptr; add_query_str: string);
+{
+   sqlAddStr(query_handle, add_query_str);
+   MyLog('sql: ' + add_query_str);
+} //Function MysqlAddStr(var query_handle: longInt; add_query_str: string): longInt;
+
+
+function GetTable : word; {
+ result := 0;
+ if runwindowmodal(winSelectSysTable) = cmDefault {
+   result := x$files_br.XF$CODE;
+ }
+}
+Procedure MyLog(_str: string);
+{
+//  LogStrToFile(GetLogFile_debug, DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS') + ': ' + _str);
+
+  if not _needlog then exit;
+  _str := DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS') + ': '+_str + ''#13'';
+  HttpConnect_AddValueToLongString(_serviceLog, _str, _LongStringLog);
+}
+
+
+function GetLogFile : string;
+{
+  _logQRY_OUT := GenerateNewFile+'.log';
+  HttpConnect_SaveToFileEx(_serviceLog, _LongStringLog, _logQRY_OUT, cpUTF8, false);
+  result := _logQRY_OUT;
+}
+procedure disableLog; {
+  HttpConnect_DestroyLongString(_serviceLog, _LongStringLog);
+  HttpConnect_Free(_serviceLog);
+  set _needlog := false;
+}
+procedure enableLog; {
+   disableLog;
+  _serviceLog    := HttpConnect_CreateEx('http://ya.ru', '', '', true);
+  _LongStringLog := HttpConnect_CreateLongString(_serviceLog);
+  set _needlog := true;
+}
+Procedure processJRN_One(_office : word; _NrecJRN : comp); {
+
+}
+
+Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp); {
+delete all tJRN;
+ _try {
+      sql
+        Select top 10000
+            max(nrec)
+          , tablecode
+          , tablenrec
+        from x$journal
+        where  nrec > :(_lastNrecJRN)
+         and officeno = :(_office)
+        group by tablecode, tablenrec
+      into tJRN;
+  }
+  _except else {}
+  _loop tJRN ordered by tJRN.nrec {
+     processJRN_One(_office, tJRN.nrec);
+  }
+}
+handleevent
+end;
+end.

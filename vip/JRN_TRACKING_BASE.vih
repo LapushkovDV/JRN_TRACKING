@@ -1,0 +1,62 @@
+/*************************************************************************************************\
+* Наименование: Базовый объект формирования запросов и JSON произвольной структуры                *
+* Контур/Модуль: Абстрактный конструктор JSON                                                     *
+* Примечание:                                                                                     *
+*                                                                                                 *
+* Вид работы  |Номер         |Дата    |Исполнитель              |Проект                           *
+* ----------------------------------------------------------------------------------------------- *
+
+\*************************************************************************************************/
+
+#ifnDef _JRN_TRACKING_BASE_INCLUDED_
+#define _JRN_TRACKING_BASE_INCLUDED_
+#component "C_JRN_TRACKING"
+
+ObjInterface oJRN_TRACKING_BASE;
+public:
+#doc
+#end
+
+
+#doc
+Записать в длинную строку лог.
+Получить путь на лог-файл можно GetLogFile
+#end
+Procedure MyLog(_str: string);
+
+#doc
+Выгружает на диск длинную строку с логом и очищает строку.
+Возвращается путь на выгруженный файл
+#end
+function GetLogFile : string;
+
+#doc
+Создать новый файл логов
+#end
+Function GenerateNewFile: string;
+
+
+#doc
+добавить строку в запрос с логированием
+#end
+Procedure MysqlAddStr(var query_handle: tptr; add_query_str: string);
+
+#doc
+Выбор таблицы
+#end
+function GetTable : word;
+
+#doc
+Обработать группу записей журнала по офису начиная с последнего обработанного NREC
+обрабатывать будем по 10000
+_office : word - номер офиса
+_lastNrecJRN comp - nrec журнала, с которого начинать обработку
+#end
+Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp);
+
+
+end;
+
+VipInterface JRN_TRACKING_BASE Implements oJRN_TRACKING_BASE #Licensed_Free;
+
+#end

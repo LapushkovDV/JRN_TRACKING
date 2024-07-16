@@ -1,0 +1,55 @@
+/*
+*/
+alter dictionary;
+Create Table JRN_LastNrecs "Последние NREC журнала"
+  With Table_CODE = 13590
+  With Replace
+  With TableOptions Branched
+(
+  NRec        : comp   "Номер записи"
+, officeno    : word   "Номер офиса"
+, lastJRNNrec : comp   "Последний номер записи журнала"
+)
+with Index
+(
+  JRN_LastNrecs01 = NRec (unique, surrogate, journal)
+);
+
+Create Table JRN_Publication_term "Условия публикации записи по событию"
+  With Table_CODE = 13591
+  With Replace
+  With TableOptions Branched
+(
+  NRec        : comp   "Номер записи"
+, officeno    : word   "Номер офиса"
+, wtable      : word   "Номер таблицы"
+, status      : byte   "Статус 1-актина, 0-черновик"
+, Name        : string "Наименование условия"
+, CODE        : string "Уникальный номер шаблона запроса"
+, Description : string "Описание"
+, operation   : byte   "Операции отслеживания"
+, JoinWhereTerms  : LVar   "Join и секция where"
+)
+with Index
+(
+  JRN_Pblctntrm01 = NRec (unique, surrogate, journal)
+ ,JRN_Pblctntrm02 = officeno + wtable
+);
+
+Create Table JRN_Public_subscribe "Подписанные объекты на изменение"
+  With Table_CODE = 13592
+  With Replace
+  With TableOptions Branched
+(
+  NRec        : comp   "Номер записи"
+, cPublication_term : ref(JRN_Publication_term) "Ссылка на условие публикации"
+, ObjType     : string "Наименование типа объекта (класса)"
+, ObjCode     : string "Код экземпляра класса для формирования сообщения"
+, Description : string "Описание"
+)
+with Index
+(
+  JRN_PblctSubscr01 = NRec (unique, surrogate, journal)
+ ,JRN_PblctSubscr02 = cPublication_term
+);
+

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>JRN_TRACKING</ProjectName>
+		<CheckAtlVer>6000005000</CheckAtlVer>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="C:\Galaktika\ATL6\Update_10.1.2230\galsrv\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+			<ProjectVar Name="$[GalSrc]" Value="C:\Galaktika\ATL6\Update_10.1.2230\ERP91\CompSrc\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\ATL6\EXE\</AtlDir>
+				<DebugInfo>False</DebugInfo>
+				<LocalInfo>False</LocalInfo>
+				<StrictVip>True</StrictVip>
+				<ClearResource>True</ClearResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[GalSrc]\*
+					$[AtlPath]\*
+					$[PROJECTPATH]\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_JOIN.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\C_Common.res
+					$[GalExe]\C_Tune.res
+					$[GalExe]\C_ExpImp.res
+					$[GalExe]\F_UserReport.res
+					$[GalExe]\F_KATDOC.res
+					$[GalExe]\L_SOPRDOC.res
+					$[GalExe]\L_SKLAD.res
+					$[GalExe]\L_COMMON.res
+					$[GalExe]\C_EXTCLASS.res
+					$[GalExe]\m_mnplan.res
+				</ResourceList>
+				<OutputResource>$[ProjectPath]\$[ProjectName]$[ExtRes]</OutputResource>
+				<SubServientResource>$[ProjectPath]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[ProjectPath]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[ProjectPath]\$[ProjectName]</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]</TemporaryDirectory>
+			</VipFiles>
+			<VipMessages>
+				<VerboseMake>True</VerboseMake>
+				<WarnScreenDuplicateNames>True</WarnScreenDuplicateNames>
+				<WarnConvertInteger>True</WarnConvertInteger>
+				<WarnConvertReal>True</WarnConvertReal>
+				<WarnConvertString>True</WarnConvertString>
+				<WarnConvertDateTime>True</WarnConvertDateTime>
+			</VipMessages>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseName>..\..\GAL910\DATA_EM</DatabaseName>
+					<DatabaseDriver>3</DatabaseDriver>
+					<DatabaseID>sng</DatabaseID>
+					<SqlServerParameters>sng</SqlServerParameters>
+					<LogPas>True</LogPas>
+					<UserOffice>1</UserOffice>
+					<UserName>lapus</UserName>
+					<Password>Zraeqw123</Password>
+					<HwKeyTransport>1</HwKeyTransport>
+					<HwKeyDirectory>localhost:55555</HwKeyDirectory>
+					<LicFileName>..\..\..\ATL6\lic\Support.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<DebugOptions StopOnStartup="False"/>
+		<FileList>
+			<File Name="JRN_TRACKING.prj" PosX="13" PosY="11" OpenEditor="True"/>
+			<File Name="vip\JRN_TRACKING_BASE.vip" PosX="1" PosY="37" OpenEditor="True" Active="True"/>
+			<File Name="vip\JRN_TRACKING_PUBLICATION_TERMS.vip" PosX="44" PosY="32" OpenEditor="True"/>
+			<File Name="vip\JRN_TRACKING_PUBLICATION_TERMS.pan" PosX="52" PosY="30" OpenEditor="True"/>
+			<File Name="vip\JRN_TRACKING_PUBLICATION_TERMS.vih" PosX="88" PosY="17" OpenEditor="True"/>
+			<File Name="vip\JRN_TRACKING_BASE.vih" PosX="14" PosY="60" OpenEditor="True"/>
+		</FileList>
+		<BreakPointList>
+			<BreakPoint FileName="Vip.prj" Line="90"/>
+			<BreakPoint FileName="SOURCE\MR_RolesAndUsers.vip" Line="13"/>
+			<BreakPoint FileName="Source\shk_barcodeFunc.vip" Line="218"/>
+			<BreakPoint FileName="Source\SHK_MakeMove.vip" Line="206"/>
+			<BreakPoint FileName="Source\SHK_MakeMove.vip" Line="802"/>
+			<BreakPoint FileName="source\InterfaceSqlJournResp.vip" Line="491"/>
+		</BreakPointList>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\_git\JRN_TRACKING\JRN_TRACKING.prj" DateTimeStart="45489,7007013079" DateTimeCompile="0,000247766205575317" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtError" MessageText="ет секции с именем БД : { Internal }

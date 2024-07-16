@@ -1,0 +1,64 @@
+/*************************************************************************************************\
+* Наименование: Базовый объект формирования запросов и JSON произвольной структуры                *
+* Контур/Модуль: Абстрактный конструктор JSON                                                     *
+* Примечание:                                                                                     *
+*                                                                                                 *
+* Вид работы  |Номер         |Дата    |Исполнитель              |Проект                           *
+* ----------------------------------------------------------------------------------------------- *
+
+\*************************************************************************************************/
+/*
+x$journal.status = 2 - insert
+x$journal.status = 4 - update
+x$journal.status = 8 - delete
+*/
+#include Query.vih
+#include JRN_TRACKING_PUBLICATION_TERMS.vih
+
+//************************************************************
+const
+end;
+Interface JRN_TRACKING_PUBLICATION_TERMS 'Отслеживание событий изменений по журналу. Условия публикации сообщения';
+create view
+as select
+   if(JRN_TERM.status = 0, 'ЧЕРНОВИК','АКТИВИРОВАНО') (fieldname = statusname)
+from
+   JRN_Publication_term JRN_TERM
+ , JRN_Public_subscribe JRN_TERMS_SUBSCR
+ , x$files TblTerm
+ where ((
+        JRN_TERM.wtable == TblTerm.XF$CODE
+   and    JRN_TERM.nrec == JRN_TERMS_SUBSCR.cPublication_term
+   ))
+;
+function getColorStatus(_status : word) : word; cacheable;{
+  if JRN_TERM.status = 0
+    then result := 10   // красный
+    else result := 7;  // зеленый
+}
+#include JRN_TRACKING_PUBLICATION_TERMS.pan
+/*
+ to do
+ изменить структуру QUE_ENTRIESFORREVIEW для того, чтобы туда можно было не только конструктор JSON использовать (QRY)
+ */
+
+handleevent
+cmCheckField: {
+ updatetable;
+ rereadrecord;
+}
+cmPick:{
+  case curfield of
+     #TblTerm.XF$NAME :{
+         set JRN_TERM.wtable := GetTable;
+         updatetable;
+     }
+  end
+  rereadrecord;
+}
+cmdefault:{
+  runwindowmodal(wnJRN_TRACKING_PUBLICATION_TERMS_Edit);
+  rereadrecord;
+}
+end;
+end.
