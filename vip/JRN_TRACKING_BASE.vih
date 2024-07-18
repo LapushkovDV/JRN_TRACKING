@@ -47,12 +47,48 @@ Procedure MysqlAddStr(var query_handle: tptr; add_query_str: string);
 function GetTable : word;
 
 #doc
+Просмотр и редактирование последних NREC журнала по офисам
+#end
+Procedure Show_LastNrecs;
+
+#doc
+Проверить корректность условия публикации
+проверяется корректность запроса и наличие подписчиков
+
+Параметры:
+_fcJRN_TERM - comp; ссылка на eckjdbt JRN_Publication_term
+_cRec       - comp; NREC записи по которой проверяется условие публикации
+_returnNrec - comp; возвращаемый. nrec , который будет подставлен в условие WHERE при генерации тела сообщения
+_err        - string; возвращаемый. текст ошибки
+result = true  - условие корректно
+result = false - условие некорректно
+#end
+
+function CheckQueryTerm(_fcJRN_TERM, _cRec: comp; var _returnNrec : comp; var _err : string): boolean;
+
+#doc
+Обработать группу записей журнала по всем офисам
+ вызывает processJRNFromLastNREC по каждому офису
+#end
+Procedure processJRNAllOffice;
+
+#doc
 Обработать группу записей журнала по офису начиная с последнего обработанного NREC
 обрабатывать будем по 10000
 _office : word - номер офиса
 _lastNrecJRN comp - nrec журнала, с которого начинать обработку
 #end
 Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp);
+
+#doc
+Отключить логирование
+#end
+procedure disableLog;
+
+#doc
+Включить логирование
+#end
+procedure enableLog;
 
 
 end;

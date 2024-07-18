@@ -14,18 +14,19 @@ x$journal.status = 8 - delete
 */
 #include Query.vih
 #include JRN_TRACKING_PUBLICATION_TERMS.vih
-
+#include Protector.vih
 //************************************************************
+#component "C_JRN_TRACKING"
 const
 end;
 Interface JRN_TRACKING_PUBLICATION_TERMS 'Отслеживание событий изменений по журналу. Условия публикации сообщения';
 create view
+var
+   Protector: IProtector;
 as select
    if(JRN_TERM.status = 0, 'ЧЕРНОВИК','АКТИВИРОВАНО') (fieldname = statusname)
 from
-   JRN_Publication_term JRN_TERM
- , JRN_Public_subscribe JRN_TERMS_SUBSCR
- , x$files TblTerm
+  x$files TblTerm
  where ((
         JRN_TERM.wtable == TblTerm.XF$CODE
    and    JRN_TERM.nrec == JRN_TERMS_SUBSCR.cPublication_term
@@ -36,11 +37,28 @@ function getColorStatus(_status : word) : word; cacheable;{
     then result := 10   // красный
     else result := 7;  // зеленый
 }
+procedure setenabledcommand; {
+   if JRN_TERM.useCustomField = true
+    then SetFieldOption(#JRN_TERM.CustomField, ofSelectable )
+    else ClearFieldOption(#JRN_TERM.CustomField, ofSelectable);
+
+  if nullvipref(Protector) then {
+      LoadVipRef(Protector, 'Protector');
+      Protector.LinkTo(cfsGetCurrentContainerSelf, 'wnJRN_TRACKING_PUBLICATION_TERMS_Edit');
+    }
+  if JRN_TERM.status = 1
+    then {
+       disablecommand(cmValue1);
+       enablecommand(cmValue2);
+       Protector.SetProtected(True);
+    }
+    else {
+       disablecommand(cmValue2);
+       enablecommand(cmValue1);
+       Protector.SetProtected(False);
+    }
+}
 #include JRN_TRACKING_PUBLICATION_TERMS.pan
-/*
- to do
- изменить структуру QUE_ENTRIESFORREVIEW для того, чтобы туда можно было не только конструктор JSON использовать (QRY)
- */
 
 handleevent
 cmCheckField: {
@@ -59,6 +77,16 @@ cmPick:{
 cmdefault:{
   runwindowmodal(wnJRN_TRACKING_PUBLICATION_TERMS_Edit);
   rereadrecord;
+}
+cmPositionChanged: {
+  setenabledcommand;
+}
+cmCheckField: {
+  case curfield of
+   #JRN_TERM.useCustomField: {
+     setenabledcommand;
+   }
+   end;
 }
 end;
 end.

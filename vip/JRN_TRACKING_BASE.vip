@@ -12,19 +12,21 @@ x$journal.status = 2 - insert
 x$journal.status = 4 - update
 x$journal.status = 8 - delete
 */
+
 #include Query.vih
+#include QUE_BASE.vih
 #include JRN_TRACKING_BASE.vih
 
 //************************************************************
 const
 end;
+#component "C_JRN_TRACKING"
 Interface JRN_TRACKING_BASE 'QRY базовый объект';
 table struct tJRN (
    nrec      : comp
  , tablecode : word
  , tablenrec : comp
- , lastdate  : date
- , lasttime  : time
+ , operation : string
 )
 with index (
   ind1 = nrec
@@ -34,24 +36,63 @@ var
       _needlog : boolean;
      _LongStringLog : tptr;
      _serviceLog    : TPTR;
-
+     _cJRN_TERM : comp;
     _logQRY_OUT : string; //глобальная
+    iQUE_BASE : QUE_BASE;
 as select
    tJRN.nrec
 from
    x$files x$files_br
  , x$journal jrn
  , tJRN
+ , JRN_Publication_term JRN_TERM
+ , JRN_Publication_term JRN_TERM_check
+ , JRN_Public_subscribe JRN_TERMS_SUBSCR_check
+ , JRN_Public_subscribe JRN_TERMS_SUBSCR
+ , JRN_LastNrecs
+ , JRN_LastNrecs JRN_LastNrecs_BR
+ , x$files
+ , x$journal x$journal_br
+ where ((
+                    JRN_TERM_check.nrec == JRN_TERMS_SUBSCR_check.cPublication_term
+       and JRN_LastNrecs_BR.lastJRNNrec == x$journal_br.nrec
+       and (       x$journal_br.officeno = JRN_LastNrecs_BR.officeno )
+ ))
+ bounds byJRN_TERMNrec _cJRN_TERM == JRN_TERM_check.nrec
+
 ;
-/*
- to do
- изменить структуру QUE_ENTRIESFORREVIEW для того, чтобы туда можно было не только конструктор JSON использовать (QRY)
- */
+File MemoFile;
 Function GenerateNewFile: string;
 {
  result := GetStringParameter('Files','OutputFilesDirectory',0)+ '\QRY_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS-SSS');
  result := replace(result,'\\','\');
 }
+
+
+window winEditJRN_LastNrecs 'Редактирвоание JRN_LastNrecs';
+browse brEditJRN_LastNrecs (,,Sci17Esc);
+ table JRN_LastNrecs;
+  Fields
+   JRN_LastNrecs.atl_lastdate  'Опрос','дата'           :[10] , Protect, NoPickButton;
+   JRN_LastNrecs.atl_lasttime  'Опрос','время'          :[10] , Protect, NoPickButton;
+   JRN_LastNrecs.officeno      'Офис'                   :[4]  , NoProtect, NoPickButton;
+   JRN_LastNrecs.lastJRNNrec   'Журнал','NREC'          :[15] , NoProtect;
+   x$journal_br.LASTDATE       'Журнал','дата'          :[10] , Protect;
+   x$journal_br.LASTTIME       'Журнал','время'         :[10] , Protect;
+end;
+end;
+TableEvent table JRN_LastNrecs;
+cmInsertRecord: {
+  Insert Current JRN_LastNrecs;
+}
+cmUpdateRecord: {
+  Update Current JRN_LastNrecs;
+}
+cmDeleteRecord: {
+  stop;abort;exit
+}
+end; //TableEvent table #table
+
 window winSelectSysTable 'Выбор системной таблицы', cyan;
 browse brSelectSysTable ;
  table x$files_br;
@@ -66,6 +107,10 @@ windowevent winSelectSysTable ;
    closewindowex(winSelectSysTable, cmDefault)
  }
 end;
+
+Procedure Show_LastNrecs; {
+  runwindowmodal(winEditJRN_LastNrecs);
+}
 Procedure MysqlAddStr(var query_handle: tptr; add_query_str: string);
 {
    sqlAddStr(query_handle, add_query_str);
@@ -79,8 +124,7 @@ function GetTable : word; {
    result := x$files_br.XF$CODE;
  }
 }
-Procedure MyLog(_str: string);
-{
+Procedure MyLog(_str: string);{
 //  LogStrToFile(GetLogFile_debug, DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS') + ': ' + _str);
 
   if not _needlog then exit;
@@ -106,27 +150,164 @@ procedure enableLog; {
   _LongStringLog := HttpConnect_CreateLongString(_serviceLog);
   set _needlog := true;
 }
-Procedure processJRN_One(_office : word; _NrecJRN : comp); {
 
-}
+sql query queryJRN =
+;
 
 Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp); {
-delete all tJRN;
- _try {
-      sql
-        Select top 10000
-            max(nrec)
-          , tablecode
-          , tablenrec
-        from x$journal
-        where  nrec > :(_lastNrecJRN)
-         and officeno = :(_office)
-        group by tablecode, tablenrec
-      into tJRN;
+   delete all tJRN;
+
+  if(getfirst JRN_LastNrecs where JRN_LastNrecs.officeno = _office) <> tsOK then exit;
+
+  _try {
+    sql
+       select
+             t.nrec as nrec
+           , t.tablecode as tablecode
+           , t.tablenrec as tablenrec
+           , t.operation as operation
+           from
+            (
+              Select top 10000
+                max(nrec) as nrec
+              , tablecode as tablecode
+              , tablenrec as tablenrec
+              , case when operation in (2,4) then 'insert/update' else 'delete' end as operation
+            from x$journal
+            where  nrec > :(_lastNrecJRN)
+             and officeno = :(_office)
+            group by tablecode, tablenrec, case when operation in (2,4) then 'insert/update' else 'delete' end
+            order by max(nrec)
+            ) t
+            order by t.nrec
+       into tJRN;
   }
   _except else {}
+
+
+  var qJRN : iQuery = queryManager.createQuery(queryJRN);
+
   _loop tJRN ordered by tJRN.nrec {
-     processJRN_One(_office, tJRN.nrec);
+
+    _loop JRN_TERM where ((_office == JRN_TERM.officeno
+                and tJRN.tablecode == JRN_TERM.wtable
+                             and 1 == JRN_TERM.status (noindex))) {
+       var iJRN_TRACKING_BASE : JRN_TRACKING_BASE;
+       var _err : string = '';
+       var _returnNrec : comp = 0h;
+       if iJRN_TRACKING_BASE.CheckQueryTerm(JRN_TERM.nrec, tJRN.tablenrec, _returnNrec, _err) {
+        _loop JRN_TERMS_SUBSCR where ((JRN_TERM.nrec == JRN_TERMS_SUBSCR.cPublication_term)) {
+           iQUE_BASE.InsertEntriesForReview_Single(  tJRN.operation
+                                                   , JRN_TERMS_SUBSCR.ObjCode
+                                                   , ''
+                                                   , _returnNrec
+                                                  ) ;
+         }
+       }
+       else {
+         iJRN_TRACKING_BASE.GetLogFile;
+       }
+    }
+    update current JRN_LastNrecs set JRN_LastNrecs.lastJRNNrec := tJRN.nrec;
+  }
+}
+
+Procedure processJRNAllOffice; {
+  _loop JRN_LastNrecs {
+     var iJRN_TRACKING_BASE :JRN_TRACKING_BASE;
+     iJRN_TRACKING_BASE.processJRNFromLastNREC( JRN_LastNrecs.officeno, JRN_LastNrecs.lastJRNNrec);
+  }
+}
+
+
+function GetTableNameByCode(_tableCode : word) : string; {
+  result := '';
+   if getfirst x$files where (( _tableCode == x$files.XF$CODE)) = tsOK {
+       result := x$files.XF$NAME;
+   }
+}
+function CheckQueryTerm(_fcJRN_TERM, _cRec: comp; var _returnNrec : comp; var _err : string): boolean; {
+
+   if BoundActive(tbbyJRN_TERMNrec) {
+     popbounds(tbbyJRN_TERMNrec);
+   }
+  set _cJRN_TERM := _fcJRN_TERM;
+  pushbounds(tbbyJRN_TERMNrec);
+
+ if getfirst JRN_TERM_check <> tsOK {
+   _err := 'Не найдено условие публикации ' + string(_fcJRN_TERM, 0, 0);
+   result := false;
+ }
+
+  var objQuery: iQuery;
+  var _qryID   : tPtR;
+  var oResultSet : IResultSet;
+
+  sqlFreeStr(_qryID);
+  _qryID := 0;
+
+   MysqlAddStr(_qryID, ' select top 1 ');
+
+   var _RETURNNRECSTR : string = '';
+   if JRN_TERM_check.useCustomField = true
+    then _RETURNNRECSTR := JRN_TERM_check.customfield
+    else _RETURNNRECSTR := GetTableNameByCode(JRN_TERM_check.wtable)+'.nrec';
+
+    _RETURNNRECSTR := _RETURNNRECSTR+ ' as RETURNNREC';
+
+   MysqlAddStr(_qryID, _RETURNNRECSTR);
+   MysqlAddStr(_qryID, ' from '+GetTableNameByCode(JRN_TERM_check.wtable));
+   MemoFile.OpenMemo(JRN_TERM_check.JoinWhereTerms);
+   do {
+      var StringValue1 : string = '';
+      MemoFile.readln(StringValue1);
+      MysqlAddStr(_qryID, StringValue1);
+    } while (not MemoFile.EOF);
+   MemoFile.Close;
+
+  if _cRec <> 0h {
+   MysqlAddStr(_qryID, ' and '+GetTableNameByCode(JRN_TERM_check.wtable)+'.nrec = #comp('+string(_cRec)+')') ;
+  }
+
+  objQuery := queryManager.createQuery(_qryID);
+  if (objQuery.execute.errorCode != tsOk) then {
+    _err := 'Ошибка проверки записей'+ objQuery.ErrorCode;
+    mylog(_err);
+    result := false;
+    sqlFreeStr(_qryID);
+    Exit;
+  }
+  else{
+    result := true;
+  }
+  if JRN_TERM_check.officeno = 0 {
+    _err := 'В условии публикации не указан номер офиса';
+    mylog(_err);
+    result := false;
+    Exit;
+  }
+  if getfirst JRN_TERMS_SUBSCR_check <> tsOK {
+    _err := 'В условии публикации нет подписчиков';
+    mylog(_err);
+    result := false;
+    Exit;
+  }
+  if _cRec <> 0h {
+    var _iRes : iResultSet = objQuery.getResultSet;
+    if _iRes.getFirst <>  tsOk {
+       result := false;
+       exit;
+    } else {
+        _returnNrec := _iRes.row.val('RETURNNREC');
+       if _returnNrec = 0h  {
+          _err := 'из запроса RETURNNREC вернулось 0h';
+           mylog(_err);
+          result := false;
+          exit;
+       }
+       result := true;
+       exit;
+    }
   }
 }
 handleevent

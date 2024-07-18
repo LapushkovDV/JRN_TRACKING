@@ -1,0 +1,56 @@
+/*************************************************************************************************\
+* Наименование: Базовый объект формирования запросов и JSON произвольной структуры                *
+* Контур/Модуль: Абстрактный конструктор JSON                                                     *
+* Примечание:                                                                                     *
+*                                                                                                 *
+* Вид работы  |Номер         |Дата    |Исполнитель              |Проект                           *
+* ----------------------------------------------------------------------------------------------- *
+
+\*************************************************************************************************/
+/*
+x$journal.status = 2 - insert
+x$journal.status = 4 - update
+x$journal.status = 8 - delete
+*/
+
+#include Query.vih
+#include JRN_TRACKING_BASE.vih
+
+//************************************************************
+const
+end;
+Interface JRN_TRACKING_TEST 'TEST функциональности';
+create view
+;
+ Screen ScrJRN_TRACKING_PUBLICATION_TERMS_Edit (,,Sci18Esc);
+   Notablenavigation;
+    buttons
+     cmValue1,,,;
+     cmValue2,,,;
+     cmValue3,,,;
+<<
+Демонстрация работы JRN_TRACKING
+
+<. Последние NREC журнала по офисам .>
+
+<.    Просмотр условий публикации   .>
+
+<.        Обработать журнал         .>
+
+>>
+    end;//Screen ScrQRY_getParameter
+handleevent
+cmValue1: {
+  var iJRN_TRACKING_BASE : JRN_TRACKING_BASE;
+  iJRN_TRACKING_BASE.Show_LastNrecs;
+}
+cmValue2: {
+ runinterface('C_JRN_TRACKING::JRN_TRACKING_PUBLICATION_TERMS');
+}
+cmValue3: {
+  var iJRN_TRACKING_BASE : JRN_TRACKING_BASE;
+  iJRN_TRACKING_BASE.processJRNAllOffice;
+  message('готово');
+}
+end;
+end.

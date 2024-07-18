@@ -1,8 +1,4 @@
 alter dictionary;
-drop table QRY_Template;
-drop table QRY_TemplateSP;
-drop table QRY_Instance;
-drop table QRY_Instance_FLD_LVL;
-drop table QRY_Instance_FLD;
-
-
+drop Table JRN_LastNrecs;
+drop Table JRN_Publication_term;
+drop Table JRN_Public_subscribe;
