@@ -160,8 +160,8 @@ Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp); {
   if(getfirst JRN_LastNrecs where JRN_LastNrecs.officeno = _office) <> tsOK then exit;
 
   _try {
-    sql
-       select
+      sql
+       select distinct
              t.nrec as nrec
            , t.tablecode as tablecode
            , t.tablenrec as tablenrec
@@ -169,15 +169,14 @@ Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp); {
            from
             (
               Select top 10000
-                max(nrec) as nrec
+                nrec as nrec
               , tablecode as tablecode
               , tablenrec as tablenrec
               , case when operation in (2,4) then 'insert/update' else 'delete' end as operation
             from x$journal
-            where  nrec > :(_lastNrecJRN)
+            where  nrec >:(_lastNrecJRN)
              and officeno = :(_office)
-            group by tablecode, tablenrec, case when operation in (2,4) then 'insert/update' else 'delete' end
-            order by max(nrec)
+            order by nrec
             ) t
             order by t.nrec
        into tJRN;
