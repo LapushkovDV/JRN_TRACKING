@@ -35,7 +35,7 @@ end; //TableEvent table #table
 Window wnJRN_TRACKING_PUBLICATION_TERMS_Edit 'Редактирование условия публикации' ;
   //---------------------------------------------
     Screen ScrJRN_TRACKING_PUBLICATION_TERMS_Edit (,,Sci18Esc);
-    Show at (,,80,7);
+    Show at (,,80,5);
     Table JRN_TERM;
     Fields
      statusname           : Protect, {Font={Color=getColorStatus(JRN_TERM.status)}};
@@ -82,7 +82,7 @@ Show at (81,1,,1) Fixed_y;
 end;
 
 Browse brJRN_TERMS_SUBSCR;
-  Show at (81,2,,7);
+  Show at (81,2,,);
 Table JRN_TERMS_SUBSCR;
 Fields
   JRN_TERMS_SUBSCR.ObjType     'типа объекта'   : [3] , NoProtect, NoPickButton, #colorneed(TRIM(JRN_TERMS_SUBSCR.ObjType)='');
@@ -91,7 +91,7 @@ Fields
 end;//Browse brNormPercent
 
 text JRN_TERM.JoinWhereTerms 'Секция join и where';
-        show at ( ,8,,);
+        show at ( ,6,80,);
 
 end; // window
 

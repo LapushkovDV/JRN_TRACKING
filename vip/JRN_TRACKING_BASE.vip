@@ -154,12 +154,16 @@ procedure enableLog; {
 sql query queryJRN =
 ;
 
-Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp); {
+Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp; _topCnt : longint = 10000); {
    delete all tJRN;
 
   if(getfirst JRN_LastNrecs where JRN_LastNrecs.officeno = _office) <> tsOK then exit;
 
   _try {
+    /*
+    to do
+    переделать данный запрос, чтобы можно менять колво выбираемых записей _topCnt
+    */
       sql
        select distinct
              t.nrec as nrec
@@ -168,7 +172,7 @@ Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp); {
            , t.operation as operation
            from
             (
-              Select top 10000
+              Select top 10000 //:(_topCnt)
                 nrec as nrec
               , tablecode as tablecode
               , tablenrec as tablenrec
@@ -211,10 +215,10 @@ Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp); {
   }
 }
 
-Procedure processJRNAllOffice; {
+Procedure processJRNAllOffice(_topCnt : longint = 10000); {
   _loop JRN_LastNrecs {
      var iJRN_TRACKING_BASE :JRN_TRACKING_BASE;
-     iJRN_TRACKING_BASE.processJRNFromLastNREC( JRN_LastNrecs.officeno, JRN_LastNrecs.lastJRNNrec);
+     iJRN_TRACKING_BASE.processJRNFromLastNREC( JRN_LastNrecs.officeno, JRN_LastNrecs.lastJRNNrec, _topCnt);
   }
 }
 

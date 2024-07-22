@@ -70,7 +70,7 @@ function CheckQueryTerm(_fcJRN_TERM, _cRec: comp; var _returnNrec : comp; var _e
 Обработать группу записей журнала по всем офисам
  вызывает processJRNFromLastNREC по каждому офису
 #end
-Procedure processJRNAllOffice;
+Procedure processJRNAllOffice(_topCnt : longint = 10000);
 
 #doc
 Обработать группу записей журнала по офису начиная с последнего обработанного NREC
@@ -78,7 +78,7 @@ Procedure processJRNAllOffice;
 _office : word - номер офиса
 _lastNrecJRN comp - nrec журнала, с которого начинать обработку
 #end
-Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp);
+Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp; _topCnt : longint = 10000);
 
 #doc
 Отключить логирование
