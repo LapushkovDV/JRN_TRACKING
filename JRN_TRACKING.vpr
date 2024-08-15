@@ -91,12 +91,13 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="JRN_TRACKING.prj" PosX="26" PosY="23" OpenEditor="True"/>
-			<File Name="vip\JRN_TRACKING_BASE.vip" PosX="77" PosY="128" OpenEditor="True" Active="True"/>
+			<File Name="JRN_TRACKING.prj" PosX="26" PosY="24" OpenEditor="True"/>
+			<File Name="vip\JRN_TRACKING_BASE.vip" PosX="16" PosY="238" OpenEditor="True" Active="True"/>
 			<File Name="vip\JRN_TRACKING_PUBLICATION_TERMS.vip" PosX="1" PosY="84" OpenEditor="True"/>
 			<File Name="vip\JRN_TRACKING_PUBLICATION_TERMS.pan" PosX="70" PosY="113" OpenEditor="True"/>
 			<File Name="vip\JRN_TRACKING_PUBLICATION_TERMS.vih" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="vip\JRN_TRACKING_BASE.vih" PosX="25" PosY="65" OpenEditor="True"/>
+			<File Name="vip\JRN_TRACKING_BASE.vih" PosX="28" PosY="81" OpenEditor="True"/>
+			<File Name="vip\JRN_TRACKING_TEST.vip" PosX="32" PosY="63" OpenEditor="True"/>
 		</FileList>
 		<DebugOptions StopOnStartup="False"/>
 		<MarkerList>
@@ -142,7 +143,7 @@
 			<Marker FileName="Source\SHK_InOut_KatBoxSaldo.vpp" Caption="Нумерованная закладка 1" Line="619" NumIndex="1" MarkerType="mtNumBookmark" Comment="if"/>
 			<Marker FileName="Source\SHK_InOut_KatSopr.vpp" Caption="Нумерованная закладка 1" Line="680" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="vip\SHK_InOut_InvTab.vpp" Caption="Нумерованная закладка 1" Line="141" NumIndex="1" MarkerType="mtNumBookmark" Comment="_loop"/>
-			<Marker FileName="vip\JRN_TRACKING_BASE.vip" Caption="Нумерованная закладка 1" Line="174" NumIndex="1" MarkerType="mtNumBookmark" Comment="update current JRN_LastNrecs set JRN_LastNrecs.lastJRNNrec := tJRN."/>
+			<Marker FileName="vip\JRN_TRACKING_BASE.vip" Caption="Нумерованная закладка 1" Line="236" NumIndex="1" MarkerType="mtNumBookmark" Comment="start"/>
 		</MarkerList>
 		<BreakPointList>
 			<BreakPoint FileName="Vip.prj" Line="90"/>
@@ -152,15 +153,15 @@
 			<BreakPoint FileName="Source\SHK_MakeMove.vip" Line="802"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\_git\JRN_TRACKING\JRN_TRACKING.prj" DateTimeStart="45490,5618421644" DateTimeCompile="4,44097240688279E-5" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\_git\JRN_TRACKING\JRN_TRACKING.prj" DateTimeStart="45519,5983300347" DateTimeCompile="0,000327372683386784" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtError" MessageText="е найден файл лицензий C:\sup\exe\License.lic Обратитесь к дилеру за копией лицензионного файла.and : LongInt; aInfo : Pointer) : LongInt" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtError" MessageText="е найден файл лицензий C:\sup\exe\License.lic Обратитесь к дилеру за копией лицензионного файла.KA\_GIT\JRN_TRACKING&quot; 2=&quot;C:\GALAKTIKA\GAL\FRM" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtError" MessageText="Ошибка при открытии include файла GLOREQUIRED.VER" SourceFileName="C:\GALAKTIKA\_GIT\JRN_TRACKING\JRN_TRACKING.ver" SourceLine="3" SourceColumn="25">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\_git\JRN_TRACKING\JRN_TRACKING.prj" Line="20" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtEndCompile" MessageText="17.07.2024 13:29:07"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="15.08.2024 14:22:04"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

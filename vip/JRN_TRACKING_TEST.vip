@@ -19,11 +19,19 @@ x$journal.status = 8 - delete
 //************************************************************
 const
 end;
-Interface JRN_TRACKING_TEST 'TEST функциональности';
+Interface JRN_TRACKING_TEST 'Демонстрация функциональности JRN_TRACKING';
 create view
+ var
+   _strtohash : string;
+   iJRN_TRACKING_BASE : JRN_TRACKING_BASE;
+   _cntTop : longint;
 ;
  Screen ScrJRN_TRACKING_PUBLICATION_TERMS_Edit (,,Sci18Esc);
    Notablenavigation;
+   fields
+!    _strtohash          : noprotect;
+!    iJRN_TRACKING_BASE.GetHash(_strtohash) : protect;
+    _cntTop : noprotect;
     buttons
      cmValue1,,,;
      cmValue2,,,;
@@ -35,7 +43,12 @@ create view
 
 <.    Просмотр условий публикации   .> - просмотр и редактирование условий публикации
 
-<.        Обработать журнал         .> - обработка идет пулом по 10000 записей журнала
+<.        Обработать журнал         .> - обработка идет пулом по .@@@@@@@@@@@@@@ записей журнала
+
+
+!.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+!.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 >>
     end;//Screen ScrQRY_getParameter
@@ -49,8 +62,11 @@ cmValue2: {
 }
 cmValue3: {
   var iJRN_TRACKING_BASE : JRN_TRACKING_BASE;
-  iJRN_TRACKING_BASE.processJRNAllOffice;
+  iJRN_TRACKING_BASE.processJRNAllOffice(_cntTop);
   message('готово');
+}
+cmcheckfield:{
+  rereadrecord;
 }
 end;
 end.
