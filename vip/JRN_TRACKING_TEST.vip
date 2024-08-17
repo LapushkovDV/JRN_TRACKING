@@ -25,13 +25,15 @@ create view
    _strtohash : string;
    iJRN_TRACKING_BASE : JRN_TRACKING_BASE;
    _cntTop : longint;
+   _enableLog : boolean = false;
 ;
  Screen ScrJRN_TRACKING_PUBLICATION_TERMS_Edit (,,Sci18Esc);
    Notablenavigation;
    fields
 !    _strtohash          : noprotect;
 !    iJRN_TRACKING_BASE.GetHash(_strtohash) : protect;
-    _cntTop : noprotect;
+    _cntTop    : noprotect;
+    _enableLog : noprotect;
     buttons
      cmValue1,,,;
      cmValue2,,,;
@@ -44,7 +46,7 @@ create view
 <.    Просмотр условий публикации   .> - просмотр и редактирование условий публикации
 
 <.        Обработать журнал         .> - обработка идет пулом по .@@@@@@@@@@@@@@ записей журнала
-
+                                          [.] вести лог работы обработки журнала`
 
 !.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
@@ -61,8 +63,16 @@ cmValue2: {
  runinterface('C_JRN_TRACKING::JRN_TRACKING_PUBLICATION_TERMS');
 }
 cmValue3: {
-  var iJRN_TRACKING_BASE : JRN_TRACKING_BASE;
+  var iJRN_TRACKING_BASE : JRN_TRACKING_BASE new;
+  if not loadvipinterface(iJRN_TRACKING_BASE) then exit;
+
+  if _enableLog
+    then iJRN_TRACKING_BASE.enableLog
+    else iJRN_TRACKING_BASE.disableLog;
+
   iJRN_TRACKING_BASE.processJRNAllOffice(_cntTop);
+  putfiletoclient(iJRN_TRACKING_BASE.GetLogFile, false);
+  freevipinterface(iJRN_TRACKING_BASE);
   message('готово');
 }
 cmcheckfield:{

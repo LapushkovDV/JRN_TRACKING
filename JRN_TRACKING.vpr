@@ -92,12 +92,12 @@
 		</DatabaseConfiguration>
 		<FileList>
 			<File Name="JRN_TRACKING.prj" PosX="26" PosY="24" OpenEditor="True"/>
-			<File Name="vip\JRN_TRACKING_BASE.vip" PosX="16" PosY="238" OpenEditor="True" Active="True"/>
-			<File Name="vip\JRN_TRACKING_PUBLICATION_TERMS.vip" PosX="1" PosY="84" OpenEditor="True"/>
-			<File Name="vip\JRN_TRACKING_PUBLICATION_TERMS.pan" PosX="70" PosY="113" OpenEditor="True"/>
+			<File Name="vip\JRN_TRACKING_BASE.vip" PosX="15" PosY="151" OpenEditor="True" Active="True"/>
+			<File Name="vip\JRN_TRACKING_PUBLICATION_TERMS.vip" PosX="21" PosY="49" OpenEditor="True"/>
+			<File Name="vip\JRN_TRACKING_PUBLICATION_TERMS.pan" PosX="20" PosY="133" OpenEditor="True"/>
 			<File Name="vip\JRN_TRACKING_PUBLICATION_TERMS.vih" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="vip\JRN_TRACKING_BASE.vih" PosX="28" PosY="81" OpenEditor="True"/>
-			<File Name="vip\JRN_TRACKING_TEST.vip" PosX="32" PosY="63" OpenEditor="True"/>
+			<File Name="vip\JRN_TRACKING_BASE.vih" PosX="26" PosY="81" OpenEditor="True"/>
+			<File Name="vip\JRN_TRACKING_TEST.vip" PosX="33" PosY="65" OpenEditor="True"/>
 		</FileList>
 		<DebugOptions StopOnStartup="False"/>
 		<MarkerList>
@@ -143,7 +143,9 @@
 			<Marker FileName="Source\SHK_InOut_KatBoxSaldo.vpp" Caption="Нумерованная закладка 1" Line="619" NumIndex="1" MarkerType="mtNumBookmark" Comment="if"/>
 			<Marker FileName="Source\SHK_InOut_KatSopr.vpp" Caption="Нумерованная закладка 1" Line="680" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="vip\SHK_InOut_InvTab.vpp" Caption="Нумерованная закладка 1" Line="141" NumIndex="1" MarkerType="mtNumBookmark" Comment="_loop"/>
-			<Marker FileName="vip\JRN_TRACKING_BASE.vip" Caption="Нумерованная закладка 1" Line="236" NumIndex="1" MarkerType="mtNumBookmark" Comment="start"/>
+			<Marker FileName="vip\JRN_TRACKING_BASE.vip" Caption="Нумерованная закладка 1" Line="286" NumIndex="1" MarkerType="mtNumBookmark" Comment="MysqlAddStr(_qryID, '                nrec as nrec                  ');"/>
+			<Marker FileName="vip\JRN_TRACKING_TEST.vip" Caption="Нумерованная закладка 1" Line="34" NumIndex="1" MarkerType="mtNumBookmark"/>
+			<Marker FileName="vip\JRN_TRACKING_BASE.vip" Caption="Нумерованная закладка 2" Line="420" NumIndex="2" MarkerType="mtNumBookmark" Comment="}"/>
 		</MarkerList>
 		<BreakPointList>
 			<BreakPoint FileName="Vip.prj" Line="90"/>

@@ -81,6 +81,11 @@ _lastNrecJRN comp - nrec журнала, с которого начинать обработку
 Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp; _topCnt : longint = 10000);
 
 #doc
+Очистить кэш подготовленных запросов
+#end
+procedure FreeqryIDs;
+
+#doc
 получить хеш строки
 _widestr  - widestring[2097151], входная строка
 p , m - longint, параметры хеширования
