@@ -1,0 +1,74 @@
+/*************************************************************************************************\
+* Наименование: Базовый объект работы очереди                                                     *
+* Контур/Модуль: Очередь исходящих сообщений                                                      *
+* Примечание:                                                                                     *
+*                                                                                                 *
+* Вид работы  |Номер         |Дата    |Исполнитель              |Проект                           *
+* ----------------------------------------------------------------------------------------------- *
+*/
+
+#include IBackgroundStarter.vih
+#include epSystem.vih
+
+#include JRN_TRACKING_BASE.vih
+
+handler with replace hep_BSIAtl_JRN_TRACKING on ExtensionPoint epGetBackgroundStarters(aNames: pointer)
+Action
+{
+  Container_Insert(aNames, 'C_JRN_TRACKING::BSIAtl_JRN_TRACKING');
+  Result := true;
+};
+
+
+  VipInterface BSIAtl_JRN_TRACKING
+    implements IBackgroundStarter
+    licensed(Free);
+  Public:
+    constructor Init;
+    destructor  Done;
+  end;
+
+
+  // ──────────────────────────────────────
+
+interface BSIAtl_JRN_TRACKING;
+
+
+var pTitle   : string  = 'Обработка "предочереди", копирование в очередь';
+var pNeedTune: byte    = bttNone;
+
+
+property Title:    string Read  pTitle;
+property NeedTune: byte   Read  pNeedTune;
+
+
+  constructor Init; {
+     Result := true;
+  };
+
+  destructor Done; {
+  };
+
+  function SelectTaskTune(aTune: String): String; {
+     Result := '';
+  };
+
+  function IsTuneValid(aTune: String): Boolean; {
+     Result := false;
+  };
+  function  SelectTaskTunes  (mTunes : Pointer): Word; {
+    result := 0;
+  }
+  function  GetTuneName (aNRec : Comp): String; {
+    result := '';
+  }
+
+ function RunProcess(aTune: String): Word; {
+
+  var iJRN_TRACKING_BASE : JRN_TRACKING_BASE new;
+  iJRN_TRACKING_BASE.processJRNAllOffice(100000);
+  freevipinterface(iJRN_TRACKING_BASE);
+  Result := tsOk;
+ };
+
+end.
