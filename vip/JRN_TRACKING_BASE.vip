@@ -48,6 +48,7 @@ var
      _serviceLog    : TPTR;
      _cJRN_TERM : comp;
     _logQRY_OUT : string; //глобальная
+    _TestMode : boolean = false;
     iQUE_BASE : QUE_BASE;
 as select
    tJRN.nrec
@@ -167,6 +168,12 @@ procedure enableLog; {
   _LongStringLog := HttpConnect_CreateLongString(_serviceLog);
   set _needlog := true;
 }
+procedure SetTestModeOff; {
+  set _TestMode := False;
+}
+procedure SetTestModeOn; {
+  set _TestMode := True;
+}
 
 sql query queryJRN =
 ;
@@ -279,7 +286,7 @@ Procedure processJRNFromLastNREC_old( _office: word; _lastNrecJRN : comp; _topCn
 
 Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp; _topCnt : longint = 10000); {
    delete all tJRN;
-
+  StartNewVisual(vtIndicatorVisual , vfTimer, 'Выбор записей журнала',recordsintable(tntJRN));
   mylog('start processJRNFromLastNREC');
   if(getfirst JRN_LastNrecs where JRN_LastNrecs.officeno = _office) <> tsOK then exit;
 
@@ -289,7 +296,7 @@ Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp; _topCnt : 
 
   sqlFreeStr(_qryID);
   _qryID := 0;
-
+  mylog('start select');
    MysqlAddStr(_qryID, '  select distinct   ');
    MysqlAddStr(_qryID, '             t.nrec as nrec');
    MysqlAddStr(_qryID, '           , t.tablecode as tablecode');
@@ -318,9 +325,13 @@ Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp; _topCnt : 
     Exit;
   }
 
-   var _iRes : iResultSet = objQuery.getResultSet;
-   if _iRes.getFirst <>  tsOk then exit;
 
+   var _iRes : iResultSet = objQuery.getResultSet;
+    mylog('end select');
+  Setvisualheader('Заполнение таблицы в памяти');
+/*
+  if _iRes.getFirst <>  tsOk then exit;
+  mylog('start val } while _iRes.getNext = tsOk;');
    do {
        insert tJRN set
           tJRN.nrec      := _iRes.row.val('nrec')
@@ -329,10 +340,23 @@ Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp; _topCnt : 
         , tJRN.operation := _iRes.row.val('operation')
        ;
      } while _iRes.getNext = tsOk;
+  mylog('end val } while _iRes.getNext = tsOk;');
+ delete all tJRN;
+*/
+ if _iRes.getFirst <>  tsOk then exit;
+ mylog('start valAt } while _iRes.getNext = tsOk;');
+   do {
+       insert tJRN set
+          tJRN.nrec      := _iRes.row.valAt(1)  // по номерам столбцов быстрее
+        , tJRN.tablecode := _iRes.row.valAt(2)
+        , tJRN.tablenrec := _iRes.row.valAt(3)
+        , tJRN.operation := _iRes.row.valAt(4)
+       ;
+   } while _iRes.getNext = tsOk;
+  mylog('end valAt } while _iRes.getNext = tsOk;');
 
   sqlFreeStr(_qryID);
   freevipinterface(_iRes);
-
   var lastNrec : comp = 0h;
 //  var iJRN_TRACKING_BASE : JRN_TRACKING_BASE new;
 //  if not loadvipinterface(iJRN_TRACKING_BASE) then exit;
@@ -340,8 +364,9 @@ Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp; _topCnt : 
 //   iJRN_TRACKING_BASE.FreeqryIDs;
   FreeqryIDs;
   var _returnNrec : comp = 0h;
+  stopvisual;
   StartNewVisual(vtIndicatorVisual , vfTimer, 'Обработка записей журнала',recordsintable(tntJRN));
-
+  mylog('start _loop tJRN ordered by tJRN.nrec {');
   _loop tJRN ordered by tJRN.nrec {
     nextvisual;
     _loop JRN_TERM where ((_office == JRN_TERM.officeno
@@ -361,7 +386,7 @@ Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp; _topCnt : 
        }
        else {
          //iJRN_TRACKING_BASE.GetLogFile;
-         mylog(' ');
+         //mylog(' ');
          //       GetLogFile;
        }
     }
@@ -369,6 +394,7 @@ Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp; _topCnt : 
      then lastNrec := tJRN.nrec;
   }
   stopvisual;
+  mylog('end  _loop tJRN ordered by tJRN.nrec {');
   if lastNrec > 0h
    then update current JRN_LastNrecs set JRN_LastNrecs.lastJRNNrec := lastNrec;
  //   iJRN_TRACKING_BASE.FreeqryIDs;
@@ -399,7 +425,7 @@ procedure FreeqryIDs; {
 }
 function CheckQueryTerm(_fcJRN_TERM, _cRec: comp; var _returnNrec : comp; var _err : string): boolean; {
 
-  if _cRec = 0h {
+  if _cRec = 0h and _TestMode = False {
     _err := 'нулевая ссылка на позицию изменяемой таблицы, параметр _cRec';
     mylog(_err);
     result := false;
@@ -407,7 +433,7 @@ function CheckQueryTerm(_fcJRN_TERM, _cRec: comp; var _returnNrec : comp; var _e
   }
 
    if getfirst tqryID where ((_fcJRN_TERM == tqryID.cJRN_TERM)) <> tsOK {
-     // mylog('_fcJRN_TERM = ' + _fcJRN_TERM);
+     mylog('if getfirst tqryID where ((_fcJRN_TERM == tqryID.cJRN_TERM)) <> tsOK _fcJRN_TERM = ' + _fcJRN_TERM);
        if BoundActive(tbbyJRN_TERMNrec) {
          popbounds(tbbyJRN_TERMNrec);
        }
@@ -416,11 +442,13 @@ function CheckQueryTerm(_fcJRN_TERM, _cRec: comp; var _returnNrec : comp; var _e
 
        if getfirst JRN_TERM_check <> tsOK {
          _err := 'Не найдено условие публикации ' + string(_fcJRN_TERM, 0, 0);
+         mylog('CheckQueryTerm  _fcJRN_TERM = ' + string(_fcJRN_TERM,0,0) + ' ' + _err);
          result := false;
        }
 
       if JRN_TERM_check.officeno = 0 {
         _err := 'В условии публикации не указан номер офиса';
+         mylog('CheckQueryTerm  _fcJRN_TERM = ' + string(_fcJRN_TERM,0,0) + ' ' + _err);
         mylog(_err);
         result := false;
         Exit;
@@ -460,16 +488,19 @@ function CheckQueryTerm(_fcJRN_TERM, _cRec: comp; var _returnNrec : comp; var _e
      ,tqryID.tablename := GetTableNameByCode(JRN_TERM_check.wtable)
     ;
     _arrQryId[tqryID.npp] := _qryIDPrep;
+    mylog('if getfirst tqryID where ((_fcJRN_TERM == tqryID.cJRN_TERM)) <> tsOK tqryID.npp = ' + string(tqryID.npp));
+//    mylog('if getfirst tqryID where ((_fcJRN_TERM == tqryID.cJRN_TERM)) <> tsOK _qryIDPrep = ' + string(_qryIDPrep));
   }
 
+  mylog('after if getfirst tqryID where ((_fcJRN_TERM == tqryID.cJRN_TERM)) <> tsOK tqryID.npp = ' + string(tqryID.npp));
   var _qryID_from_arrQry : tptr = _arrQryId[tqryID.npp];
-  var _qryID : tptr;
-
+  var _qryID : tptr = 0;
+  sqlFreeStr(_qryID);
   sqlAddStr(_qryID, _qryID_from_arrQry);
 
   mysqlAddStr(_qryID,  ' and '+tqryID.tablename+'.nrec = #comp('+string(_cRec)+')') ;
 
-  var objQuery: iQuery;
+  var objQuery: iQuery new;
   objQuery := queryManager.createQuery(_qryID);
 
   if (objQuery.execute.errorCode != tsOk) then {
@@ -483,11 +514,12 @@ function CheckQueryTerm(_fcJRN_TERM, _cRec: comp; var _returnNrec : comp; var _e
     result := true;
   }
 
-  if _cRec <> 0h {
-    var _iRes : iResultSet = objQuery.getResultSet;
+  if _cRec <> 0h and _TestMode = False {
+    var _iRes : iResultSet new;
+    _iRes := objQuery.getResultSet;
     if _iRes.getFirst <>  tsOk {
        result := false;
-           freevipinterface(_iRes);
+       freevipinterface(_iRes);
        exit;
     } else {
         _returnNrec := _iRes.row.val('RETURNNREC');
@@ -498,7 +530,7 @@ function CheckQueryTerm(_fcJRN_TERM, _cRec: comp; var _returnNrec : comp; var _e
           result := false;
           exit;
        }
-           freevipinterface(_iRes);
+       freevipinterface(_iRes);
        result := true;
        exit;
     }

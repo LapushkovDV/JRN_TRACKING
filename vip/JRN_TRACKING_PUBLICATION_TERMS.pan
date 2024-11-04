@@ -118,7 +118,7 @@ cmValue1:{
   var iJRN_TRACKING_BASE : JRN_TRACKING_BASE new;
   var _err : string = '';
   iJRN_TRACKING_BASE.enableLog;
-
+  iJRN_TRACKING_BASE.SetTestModeOn;
   if not iJRN_TRACKING_BASE.CheckQueryTerm(JRN_TERM.nrec, 0h, 0h, _err) {
   var __log : string = iJRN_TRACKING_BASE.GetLogFile;
      message('Ошибка активации' +
@@ -130,6 +130,7 @@ cmValue1:{
    update current JRN_TERM set JRN_TERM.status := 1;
   }
   iJRN_TRACKING_BASE.disableLog;
+  iJRN_TRACKING_BASE.SetTestModeOff;
   setenabledcommand;
   rereadrecord;
 }

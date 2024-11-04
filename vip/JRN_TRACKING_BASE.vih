@@ -123,6 +123,15 @@ procedure disableLog;
 #end
 procedure enableLog;
 
+#doc
+Включить TestMode - проверки на пустые ссылки на объекты отключены (используется для проверки в конструкторе условий публикации)
+#end
+procedure SetTestModeOn;
+
+#doc
+Выключить TestMode
+#end
+procedure SetTestModeOff;
 
 end;
 

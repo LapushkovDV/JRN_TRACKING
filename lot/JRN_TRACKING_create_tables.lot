@@ -2,7 +2,7 @@
 */
 alter dictionary;
 Create Table JRN_LastNrecs "Последние NREC журнала"
-  With Table_CODE = 13590
+  With Table_CODE = 13576
   With Replace
   With TableOptions Branched
 (
@@ -16,7 +16,7 @@ with Index
 );
 
 Create Table JRN_Publication_term "Условия публикации записи по событию"
-  With Table_CODE = 13591
+  With Table_CODE = 13577
   With Replace
   With TableOptions Branched
 (
@@ -39,7 +39,7 @@ with Index
 );
 
 Create Table JRN_Public_subscribe "Подписанные объекты на изменение"
-  With Table_CODE = 13592
+  With Table_CODE = 13578
   With Replace
   With TableOptions Branched
 (
