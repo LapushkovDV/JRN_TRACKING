@@ -34,7 +34,7 @@ Action
 interface BSIAtl_JRN_TRACKING;
 
 
-var pTitle   : string  = 'Обработка "предочереди", копирование в очередь';
+var pTitle   : string  = 'Генерация исходящей предочереди по журналу на основе условий публикации';
 var pNeedTune: byte    = bttNone;
 
 
