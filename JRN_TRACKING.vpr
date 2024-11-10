@@ -91,14 +91,11 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="JRN_TRACKING.prj" PosX="26" PosY="24" OpenEditor="True"/>
-			<File Name="vip\JRN_TRACKING_BASE.vip" PosX="41" PosY="491" OpenEditor="True" Active="True"/>
-			<File Name="..\..\Viper\bin\5.5.40.0\Source\ATCONST.INC" PosX="9" PosY="4360" OpenEditor="True"/>
-			<File Name="vip\JRN_TRACKING_PUBLICATION_TERMS.vip" PosX="21" PosY="49" OpenEditor="True"/>
-			<File Name="vip\JRN_TRACKING_PUBLICATION_TERMS.pan" PosX="20" PosY="133" OpenEditor="True"/>
-			<File Name="vip\JRN_TRACKING_PUBLICATION_TERMS.vih" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="vip\JRN_TRACKING_BASE.vih" PosX="1" PosY="83" OpenEditor="True"/>
-			<File Name="vip\JRN_TRACKING_TEST.vip" PosX="28" PosY="35" OpenEditor="True"/>
+			<File Name="JRN_TRACKING.prj" PosX="26" PosY="25" OpenEditor="True"/>
+			<File Name="vip\BSIAtl_JRN_TRACKING.vip" PosX="27" PosY="69" OpenEditor="True" Active="True"/>
+			<File Name="vip\JRN_TRACKING_BASE.vip" PosX="27" PosY="359" OpenEditor="True"/>
+			<File Name="vip\JRN_TRACKING_BASE.vih" PosX="1" PosY="129" OpenEditor="True"/>
+			<File Name="vip\JRN_TRACKING_TEST.vip" PosX="1" PosY="75" OpenEditor="True"/>
 		</FileList>
 		<DebugOptions StopOnStartup="False"/>
 		<MarkerList>
@@ -145,8 +142,10 @@
 			<Marker FileName="Source\SHK_InOut_KatSopr.vpp" Caption="Нумерованная закладка 1" Line="680" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="vip\SHK_InOut_InvTab.vpp" Caption="Нумерованная закладка 1" Line="141" NumIndex="1" MarkerType="mtNumBookmark" Comment="_loop"/>
 			<Marker FileName="vip\JRN_TRACKING_TEST.vip" Caption="Нумерованная закладка 1" Line="36" NumIndex="1" MarkerType="mtNumBookmark"/>
-			<Marker FileName="vip\JRN_TRACKING_BASE.vip" Caption="Нумерованная закладка 1" Line="139" NumIndex="1" MarkerType="mtNumBookmark" Comment="if"/>
-			<Marker FileName="vip\JRN_TRACKING_BASE.vip" Caption="Нумерованная закладка 2" Line="471" NumIndex="2" MarkerType="mtNumBookmark"/>
+			<Marker FileName="vip\JRN_TRACKING_BASE.vip" Caption="Нумерованная закладка 2" Line="502" NumIndex="2" MarkerType="mtNumBookmark"/>
+			<Marker FileName="..\..\Viper\bin\5.5.40.0\Source\SysObjIfc\Query.vih" Caption="Нумерованная закладка 1" Line="191" NumIndex="1" MarkerType="mtNumBookmark" Comment="function fetch // #docl Выбрать очередную запись запроса. &lt;/brief&gt;"/>
+			<Marker FileName="vip\JRN_TRACKING_BASE.vip" Caption="Нумерованная закладка 1" Line="499" NumIndex="1" MarkerType="mtNumBookmark" Comment="sqlAddStr(_qryID, _qryID_from_arrQry);"/>
+			<Marker FileName="vip\JRN_TRACKING_PUBLICATION_TERMS.pan" Caption="Нумерованная закладка 1" Line="121" NumIndex="1" MarkerType="mtNumBookmark" Comment="iJRN_TRACKING_BASE.enableLog;"/>
 		</MarkerList>
 		<BreakPointList>
 			<BreakPoint FileName="Vip.prj" Line="90"/>
@@ -154,6 +153,7 @@
 			<BreakPoint FileName="Source\shk_barcodeFunc.vip" Line="218"/>
 			<BreakPoint FileName="Source\SHK_MakeMove.vip" Line="206"/>
 			<BreakPoint FileName="Source\SHK_MakeMove.vip" Line="802"/>
+			<BreakPoint FileName="..\..\Viper\bin\5.5.40.0\Source\SysObjIfc\Query.vih" Line="1"/>
 		</BreakPointList>
 		<CompileMessengerList>
 			<CompileMessenger Name="C:\Galaktika\_git\JRN_TRACKING\JRN_TRACKING.prj" DateTimeStart="45519,5983300347" DateTimeCompile="0,000327372683386784" StateHistory="False">

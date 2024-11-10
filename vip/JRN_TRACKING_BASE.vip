@@ -22,7 +22,7 @@ const
 end;
 var _arrQryId: Array [1..1] of tptr;
 #component "C_JRN_TRACKING"
-Interface JRN_TRACKING_BASE 'QRY базовый объект';
+Interface JRN_TRACKING_BASE 'JRN_TRACKING базовый объект';
 table struct tJRN (
    nrec      : comp
  , tablecode : word
