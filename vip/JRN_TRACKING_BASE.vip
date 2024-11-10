@@ -364,8 +364,11 @@ Procedure processJRNFromLastNREC( _office: word; _lastNrecJRN : comp; _topCnt : 
 //   iJRN_TRACKING_BASE.FreeqryIDs;
   FreeqryIDs;
   var _returnNrec : comp = 0h;
-  stopvisual;
+/*  stopvisual;
   StartNewVisual(vtIndicatorVisual , vfTimer, 'Обработка записей журнала',recordsintable(tntJRN));
+*/
+  setvisualheader( 'Обработка записей журнала');
+
   mylog('start _loop tJRN ordered by tJRN.nrec {');
   _loop tJRN ordered by tJRN.nrec {
     nextvisual;
